@@ -4,11 +4,13 @@
 # ~/ros2$ chmod +x pose2odom.py to make it executable
 # ~/ros2$ source install/setup.bash
 
+# "Yeah, you're gonna die, it's a matter of time. That ain't the question. The question's whether they're gonna have a good story to tell about you when you're gone"
+
 import rclpy
 from rclpy.node import Node
 from turtlesim.msg import Pose
 from nav_msgs.msg import Odometry
-#from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+#from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3 # two "Poses" are outputting error
 import numpy as np
 
 class Pose2Odometry(Node):
