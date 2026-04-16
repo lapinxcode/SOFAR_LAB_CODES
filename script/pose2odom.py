@@ -6,11 +6,10 @@
 
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
-import numpy as np
-
 from turtlesim.msg import Pose
+from nav_msgs.msg import Odometry
+#from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+import numpy as np
 
 class Pose2Odometry(Node):
 
@@ -25,7 +24,7 @@ class Pose2Odometry(Node):
        
         self.my_publisher = self.create_publisher(Odometry, 'odometry', 10)
         
-    def odometry_callback(self, in_msg): # returns odometry??
+    def odometry_callback(self, in_msg): # returns odometry upon receiving the pose
         odom = Odometry()
         odom.header.stamp = self.get_clock().now().to_msg() 
         odom.header.frame_id = "/odom"
@@ -33,17 +32,17 @@ class Pose2Odometry(Node):
         # set the position
         odom.pose.pose.position.x = in_msg.x
         odom.pose.pose.position.y = in_msg.y
-        l = np.sqrt(in_msg.linear_velocity**2 + in_msg.angular_velocity**2)
         
-        odom.pose.pose.orientation.w = in_msg.linear_velocity/l
+        # set the orienation
+        theta = in_msg.theta
+
+        odom.pose.pose.orientation.w = np.cos(theta/2)
         odom.pose.pose.orientation.x = 0.0
         odom.pose.pose.orientation.y = 0.0
-        odom.pose.pose.orientation.z = in_msg.angular_velocity/l
+        odom.pose.pose.orientation.z = np.sin(theta/2)
         
                 
         self.my_publisher.publish(odom)
-
-            
             
 def main(args=None):
     rclpy.init(args=args)
