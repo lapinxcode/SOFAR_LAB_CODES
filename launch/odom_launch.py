@@ -2,6 +2,7 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
+
     return LaunchDescription([
         # turtlesim pkg
         Node(
@@ -17,16 +18,22 @@ def generate_launch_description():
         ),    
 
         # conversion node (pkg created in lab)
-
         # Turtle 1
         Node(
             name = 'odom_1',
             package='sofar_lab',
             executable='../script/pose2odom.py'
         ),
+             
+        Node(
+            name = 'control',
+            package='sofar_lab',
+            executable='../script/control.py', # make it executable with 'chmod +x'
+            parameters = [{'v':2},{'dt':0.1}]
+        ),
 
         # Turtle 2
-        # sometimes I need to run colcon build --symlink-install to make it work
+        # sometimes I need to run 'colcon build --symlink-install' to make it work
 
         Node(
             name = 'odom_2',
@@ -34,7 +41,6 @@ def generate_launch_description():
             executable='../script/pose2odom.py',
             remappings = [('/turtle1/pose', '/turtle2/pose'),
                           ('/odometry', '/odometry2')]
-
         ),
 
         # rviz config
@@ -49,8 +55,11 @@ def generate_launch_description():
         Node( 
             package = "tf2_ros", 
             executable = "static_transform_publisher",
-            arguments = ["5.5", "5.5", "0", "0", "0", "0", "odom", "map"]) # maybe quaternion
-    
+            arguments = [
+                '5.5', '5.5', '0',
+                '0', '0', '0',  '1',
+                'odom', 'map'])
     ])
 
+#["5.5", "5.5", "0", "0", "0", "0", "1", "odom", "map"]) # maybe quaternion
 # tf2 - ros2 run tf2_ros static_transform_publisher 5.5 5.5 0 0 0 0 foo bar
